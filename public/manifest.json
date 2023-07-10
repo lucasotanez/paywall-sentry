@@ -5,8 +5,11 @@
     "manifest_version": 3,
     "action": {},
     "permissions": [
-        "activeTab",
+        "tabs",
         "scripting"
+    ],
+    "host_permissions": [
+        "https://*.google.com/"
     ],
     "background": {
         "service_worker": "background.js"
