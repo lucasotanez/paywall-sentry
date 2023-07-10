@@ -14,7 +14,7 @@ function getDiv(id : string) : void {
   blacklist.set("homework.study.com", true)
   blacklist.set("www.numerade.com", true)
   blacklist.set("www.coursehero.com", true)
-  blacklist.set("brainly.com", true)
+  blacklist.set("brainly.com", false)
   // News
   blacklist.set("www.wsj.com", true)
   blacklist.set("www.thetimes.co.uk", true)
