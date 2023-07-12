@@ -2,12 +2,20 @@
 // Make script run everytime the user makes a search (requires manifest.json file too):
 // https://stackoverflow.com/questions/15149322/executing-chrome-extension-onclick-instead-of-page-load
 
-function getDiv(id : string) : void {
+const style = {
+  red : "#d11919",
+  yellow : "#a6ab1f",
+  tag: "ps-marked"
 
-  // ========= Initialize hashmap here for now ==============
+}
+
+function sentry(style : { red : string, yellow : string, tag : string}) : Element[] {
+
   let blacklist = new Map<string, boolean>()
   // true = hard paywall (unimplemented as of now)
   // false = soft paywall (unimplemented)
+
+  // ========= Initialize hashmap here for now ==============
 
   // Academic Help
   blacklist.set("www.chegg.com", true)
@@ -25,40 +33,27 @@ function getDiv(id : string) : void {
   blacklist.set("www.washingtontimes.com", false)
   // ========================================================
 
-  let targetBox = document.getElementById(id)
+  let targetBox = document.getElementById("search")
+  let bottomBox = document.getElementById("botstuff")
+  if (targetBox == null || bottomBox == null) throw new Error('Page does not contain results');
 
-  let links 
-  if (targetBox != null) links = targetBox.querySelectorAll(".yuRUbf")
-  else throw "Error"
-  links = Array.from(links)
-  let index : number = links.length - 1;
-
-  let regExp = /\/[//]([^/]+)\//
-
-  while (index >= 0) {
-    let fullUrl = links[index].getElementsByTagName("a")[0].getAttribute("href");
-    let base : RegExpExecArray | string | null = null
-    if (typeof fullUrl == 'string' ) base = regExp.exec(fullUrl);
-    if (base != null) base = base[1];
-    if (typeof base != 'string' || !blacklist.has(base)) {
-      index -= 1;
-      continue    
+  function logChange(records : any, observer: any) {
+    for (const record of records) {
+      for (const addedNode of record.addedNodes) {
+        console.log(addedNode)
+      }
     }
-    let hard = blacklist.get(base) ? true : false
-    let display = links[index].getElementsByTagName("h3")[0];
-
-    if (hard) {
-      display.innerHTML = "[" + String.fromCodePoint(0x2718) + "] " + display.innerHTML;
-      display.style.color = "#d11919"
-    } else {
-      display.innerHTML = "[" + String.fromCodePoint(0x2757) + "] " + display.innerHTML;
-      display.style.color = "#a6ab1f"
-    }     
-
-    index -= 1;
   }
 
-  return  
+  const observer = new MutationObserver(logChange) 
+  observer.observe(bottomBox, { childList: true, subtree: true })
+
+  let linksTop = Array.from(targetBox.querySelectorAll(".yuRUbf"))
+  let linksBottom = Array.from(bottomBox.querySelectorAll(".yuRUbf"))
+  let links = linksTop.concat(linksBottom)
+  renderSentryResults(links, blacklist, style)
+
+  return links
 }
 
 const filter = {
@@ -66,24 +61,61 @@ const filter = {
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!tab.url) return;
-  if (tab.url.includes('https://www.google.com/search'))
-  chrome.scripting.executeScript({
-    target: {tabId: tab.id ? tab.id : -1},
-    func: getDiv,
-    args: ["search"]
-  }).then();
+  if (!tab.url || changeInfo.status != "complete") return;
+  console.log(changeInfo.title + " vs " + tab.title)
+  if (tab.url.includes('https://www.google.com/search') && changeInfo.status == 'complete'){
+    chrome.scripting.executeScript({
+      target: {tabId: tab.id ? tab.id : -1},
+      func: sentry,
+      args: [style]
+    }).then( result => console.log(result) );
+  }
 });
 
-//chrome.tabs.query({
-//  "active": true,
-//}, function (tabs : chrome.tabs.Tab[]) {
-//  console.log("running")
-//  for (let tab in tabs) {
-//    let url = tabs[tab].url
-//    let tabid = tabs[tab].id ? tabs[tab].id : -1
-//    if (!(tabid && url)) continue
-//      console.log("passed checks")
-//
-//  }
-//})
+
+function renderSentryResults( links : Element[], blacklist : Map<string, boolean>, 
+                             style : { red: string, yellow: string, tag: string} ) : void {
+  let index : number = links.length - 1;
+  let regExp = /\/[//]([^/]+)\//
+
+  while (index >= 0) {
+    // get the href of the search result entry
+    let fullUrl = links[index].getElementsByTagName("a")[0].getAttribute("href");
+
+    // get the search result entry heading (blue display title)
+    let display = links[index].getElementsByTagName("h3")[0];
+    console.log(display.style.color)
+    if (links[index].classList.contains(style.tag)) {
+      index -=1;
+      continue;
+    }
+
+    // turn the full url into the base url (i.e www.google.com)
+    let base : RegExpExecArray | string | null = null
+    if (typeof fullUrl == 'string' ) base = regExp.exec(fullUrl);
+    if (base != null) base = base[1];
+
+    // search hashmap for the base url
+    if (typeof base != 'string' || !blacklist.has(base)) {
+      index -= 1;
+      continue    
+    }
+
+    // if here, then the url is paywalled
+    // check if url is soft or hard paywall
+    let hard = blacklist.get(base) ? true : false
+    if (hard) {
+      display.innerHTML = "[" + String.fromCodePoint(0x2718) + "] " + display.innerHTML;
+      display.style.color = style.red 
+    } else {
+      display.innerHTML = "[" + String.fromCodePoint(0x2757) + "] " + display.innerHTML;
+      display.style.color = style.yellow
+    }     
+
+    // mark each element with a class
+    links[index].classList.add(style.tag)
+
+    index -= 1;
+  }
+  return
+}
