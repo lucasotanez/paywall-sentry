@@ -1,8 +1,7 @@
 const saveSubscription = () => {
   const newUrl = document.getElementById('url').value.trim();
-  let subArray = [];
   chrome.storage.local.get({subscriptions: []}).then( (result) => {
-    subArray = result.subscriptions
+    let subArray = result.subscriptions
     subArray.push(newUrl)
     chrome.storage.local.set({ subscriptions: subArray }).then( () => { 
       subArray = [newUrl]
