@@ -1,6 +1,4 @@
-// TODO:
-// Make script run everytime the user makes a search (requires manifest.json file too):
-// https://stackoverflow.com/questions/15149322/executing-chrome-extension-onclick-instead-of-page-load
+var cached : boolean = false;
 
 interface styleConfig {
   hard : string;
@@ -14,30 +12,28 @@ const style : styleConfig = {
   tag: "ps-marked"
 }
 
-function sentry(style : styleConfig) : Element[] {
+interface urlListObject {
+  [key: string] : boolean
+}
 
-  let blacklist = new Map<string, boolean>()
-  // true = hard paywall (unimplemented as of now)
-  // false = soft paywall (unimplemented)
+let paywallList : urlListObject = {}
+fetch("./blacklist.json").then( (data) => data.json() )
+.then( (data) => { 
+  console.log("cached blacklist data")
+  chrome.storage.local.get({ subscriptions: [] }).then( (result) => {
+    let userSubs = result.subscriptions;
+    for (let sub in userSubs) {
+      delete data[userSubs[sub]]
+    }
+    paywallList = data;
+    console.log("user subscriptions loaded")
+    cached = true;
+  })
+})
 
-  // ========= Initialize hashmap here for now ==============
-  blacklist.set("studylib.net", false)
+function sentry(style : styleConfig, blacklistJSON : string) : Element[] {
 
-  // Academic Help
-  blacklist.set("www.chegg.com", true)
-  blacklist.set("homework.study.com", true)
-  blacklist.set("www.numerade.com", true)
-  blacklist.set("www.coursehero.com", true)
-  blacklist.set("brainly.com", false)
-  // News
-  blacklist.set("www.wsj.com", true)
-  blacklist.set("www.thetimes.co.uk", true)
-  blacklist.set("www.thesundaytimes.co.uk", true)
-  blacklist.set("www.kyivpost.com", true)
-  blacklist.set("www.latimes.com", false)
-  blacklist.set("www.washingtonpost.com", false)
-  blacklist.set("www.washingtontimes.com", false)
-  // ========================================================
+  let blacklist : Map<string, boolean> = new Map(Object.entries(JSON.parse(blacklistJSON)))
 
   let targetBox = document.getElementById("search")
   let bottomBox = document.getElementById("botstuff")
@@ -112,21 +108,14 @@ function sentry(style : styleConfig) : Element[] {
   return links
 }
 
-const filter = {
-  urls: ["https://www.google.com/search"]
-}
-
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!tab.url || changeInfo.status != "complete") return;
-  console.log(changeInfo.title + " vs " + tab.title)
+  if (!tab.url || !cached) return;
   if (tab.url.includes('https://www.google.com/search') && changeInfo.status == 'complete'){
     chrome.scripting.executeScript({
       target: {tabId: tab.id ? tab.id : -1},
       func: sentry,
-      args: [style]
+      args: [style, JSON.stringify(paywallList)]
     }).then( result => console.log(result) );
   }
 });
-
-
 

@@ -19,8 +19,10 @@ const renderSaved = () => {
 const deleteSubscription = (e) => {
   chrome.storage.local.get({ subscriptions: [] }).then( (result) => {
     let updated = result.subscriptions
+    let baseString = e.target.innerHTML
+    baseString = baseString.substring(0, baseString.length - 2).trim()
     for (let i in updated) {
-      if (updated[i] === e.target.innerHTML) {
+      if (updated[i] == baseString) {
         delete updated[i];
         updated.pop();
         break;
