@@ -4,6 +4,12 @@
     "version": "1.0.0",
     "manifest_version": 3,
     "action": {},
+    "icons": {
+        "16": "img/ps-icon16.png",
+        "32": "img/ps-icon32.png",
+        "48": "img/ps-icon48.png",
+        "128": "img/ps-icon128.png"
+    },
     "permissions": [
         "tabs",
         "scripting",
