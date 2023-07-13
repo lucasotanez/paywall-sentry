@@ -88,12 +88,8 @@ function sentry(style : styleConfig, blacklistJSON : string) : Element[] {
   function logChange(records : any, observer: any) {
     let loadedLinks : Element[] = []
     for (const record of records) {
-      //for (const addedNode of record.addedNodes) {
-        //console.log(addedNode + " type is: " + typeof addedNode)
-        loadedLinks = loadedLinks.concat(Array.from(record.target.querySelectorAll(".yuRUbf")))
-      //}
+      loadedLinks = loadedLinks.concat(Array.from(record.target.querySelectorAll(".yuRUbf")))
     }
-    // SOMETHING HERE IS "NOT DEFINED"
     renderSentryResults(loadedLinks, blacklist, style)
   }
 
@@ -115,7 +111,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       target: {tabId: tab.id ? tab.id : -1},
       func: sentry,
       args: [style, JSON.stringify(paywallList)]
-    }).then( result => console.log(result) );
+    }).then();
   }
 });
 
