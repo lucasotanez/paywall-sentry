@@ -2,7 +2,7 @@
     <img src="https://github.com/lucasotanez/paywall-sentry/blob/main/public/img/ps-icon128.png?raw=true"/>
 </p>
 
-<h1 align="center"> 🔍 Paywall Sentry 💹</h3>
+<h1 align="center"> 🔍 Paywall Sentry 🔍</h3>
 
 <p align="center">A lightweight browser extension that offers helpful highlighting on 
 Google search results which contain content locked behind paywalls or subscription fees. 
