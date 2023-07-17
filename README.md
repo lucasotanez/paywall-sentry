@@ -18,11 +18,20 @@ and search for "Paywall Sentry"
 - That's it! The extension will automatically detect search results that require
 subscriptions and warn you accordingly.
 
-## :heavy_plus_sign: Configuration
+## :zap: Usage
+The extension detects and flags all paywalled sites out of the box. There are 2 classes
+of paywalls:
+- **Soft**: Denoted by a **[❗]** icon and a *yellow* link color. Soft paywalls allow
+free use for a limited time. For example a news outlet with a soft paywall may allow users
+to read 5 free articles before demanding a subscription.
+- **Hard**: Denoted by a **[✘]** icon and a *red* link color. Hard paywalls are stricter
+than soft paywalls and do not allow any access without a subscription.
+
+## :v: Configuration
 If you have active subscriptions for certain websites that may be flagged by Paywall
 Sentry, you can add them in the extension options:
 
-- Click the extensions icon in the top righ of your browser (the puzzle piece icon)
+- Click the extensions icon in the top right of your browser (the puzzle piece icon)
 - Click the three dots next to Paywall Sentry
 - Select "Options"
 - In the options page, you can enter the base url of any subscriptions you may have. <br>
