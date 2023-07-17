@@ -47,5 +47,6 @@ Sentry, you can add them in the extension options:
 - Click the three dots next to Paywall Sentry
 - Select "Options"
 - In the options page, you can enter the base url of any subscriptions you may have. <br>
-For example, if you own a Chegg subscription, you would input "www.chegg.com" (without quotes)
+For example, if you own a Chegg subscription, you would input "www.chegg.com" (without quotes):
+!(options-example)[file:///home/lucas/Pictures/ps-options.png]
 - Now, search results that contain the url you specified will not be flagged.
