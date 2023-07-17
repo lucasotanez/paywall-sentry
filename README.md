@@ -21,11 +21,23 @@ subscriptions and warn you accordingly.
 ## :zap: Usage
 The extension detects and flags all paywalled sites out of the box. There are 2 classes
 of paywalls:
-- **Soft**: Denoted by a **[❗]** icon and a *yellow* link color. Soft paywalls allow
+### Soft Paywalls
+> Denoted by a **[❗]** icon and a *yellow* link color. Soft paywalls allow
 free use for a limited time. For example a news outlet with a soft paywall may allow users
-to read 5 free articles before demanding a subscription.
-- **Hard**: Denoted by a **[✘]** icon and a *red* link color. Hard paywalls are stricter
+to read 5 free articles before demanding a subscription:
+
+<p align="center" style="color:#a6ab1f">[❗] This is an example of a link to a site with a soft paywall.</p>
+
+### Hard Paywalls
+> Denoted by a **[✘]** icon and a *red* link color. Hard paywalls are stricter
 than soft paywalls and do not allow any access without a subscription.
+
+<p align="center" style="color:#d11919">[✘] This is an example of a link to a site with a hard paywall.</p>
+
+In either case, Paywall Sentry still allows users to click on these links. The warnings 
+are intended to suggest that clicking on a certain search result is likely a waste of
+time (unless you are considering buying a subscription to a given site, in which case you
+should see [Configuration](#configuration) below to unmark that site).
 
 ## :v: Configuration
 If you have active subscriptions for certain websites that may be flagged by Paywall
