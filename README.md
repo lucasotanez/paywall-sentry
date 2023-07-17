@@ -50,4 +50,5 @@ Sentry, you can add them in the extension options:
 For example, if you own a Chegg subscription, you would input "www.chegg.com" (without quotes):
 - Now, search results that contain the url you specified will not be flagged.
 <br/>
+
 ![ps-options](https://github.com/lucasotanez/paywall-sentry/assets/72469916/ba29d629-e4c6-42dd-b1a6-fed116dd0136)
