@@ -1,7 +1,7 @@
 {
     "name": "Paywall Sentry",
     "description": "Show alerts on search results that contain content locked behind a paywall or subscription fee.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "manifest_version": 3,
     "action": {},
     "icons": {
