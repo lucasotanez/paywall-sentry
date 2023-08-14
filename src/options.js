@@ -37,6 +37,7 @@ const deleteSubscription = (e) => {
 function renderSubs(content) {
   let box = document.getElementById("displayBox")
   for (let i in content) {
+    if (i == null) continue;
     let newEl = document.createElement("button")
     newEl.innerHTML = content[i] + " " + String.fromCodePoint(0x274C)
     newEl.onclick = deleteSubscription;
