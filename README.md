@@ -49,3 +49,23 @@ Sentry, you can add them in the extension options:
 - In the options page, you can enter the base url of any subscriptions you may have. <br>
 For example, if you own a Chegg subscription, you would input "www.chegg.com" (without quotes)
 - Now, search results that contain the url you specified will not be flagged.
+
+## :cat2: Development & Contributing
+To develop and contribute, ensure [Node.js](https://nodejs.org/en) is installed on your system.
+
+Clone this repository with `git clone git@github.com:lucasotanez/paywall-sentry.git`. 
+
+Navigate to the local repository with `cd paywall-sentry`
+
+Run `npm install` to install all the dependencies.
+
+When ready to test the extension, run `npm run build`.
+
+On your browser, navigate to **chrome://extensions**.
+
+Click on "Load unpacked" and find the distributable folder. You can upload the whole
+folder to test the extension.
+
+If you have made changes, feel free to make a pull request with a description.
+
+### *Thanks for contributing!*
