@@ -1,5 +1,33 @@
-
 .boolean {
   display: flex;
   flex-direction: row;
+}
+
+#addUrl {
+  transition: 0.25s;
+}
+
+#addUrl:hover {
+  background-color: #78ff9c;
+  transition: 0.25s;
+}
+
+#displaySubs {
+  margin-top : 0;
+}
+
+#displayBox {
+  padding: 6px;
+  min-height: 30px;
+  border: 1px solid black;
+  border-radius: 6px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.boolean {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 0px;
+  margin-bottom: 0px;
 }
