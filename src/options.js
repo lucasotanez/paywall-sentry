@@ -1,6 +1,6 @@
 const saveSubscription = () => {
   const newUrl = document.getElementById('url').value.trim();
-  if (newUrl == "" || newUrl == null) {
+  if (newUrl == "" || newUrl == null || newUrl == undefined) {
     return;
   }
   chrome.storage.local.get({subscriptions: []}).then( (result) => {
@@ -15,7 +15,7 @@ const saveSubscription = () => {
 
 const renderSaved = () => {
   chrome.storage.local.get({subscriptions: []}).then( (result) => {
-    renderSubs(result.subscriptions);
+    if (result.subscriptions != null) renderSubs(result.subscriptions);
   })
   chrome.storage.local.get(["hideAll"]).then( (result) => {
     let state = result.hideAll; 
@@ -40,11 +40,15 @@ const deleteSubscription = (e) => {
     let updated = result.subscriptions
     let baseString = e.target.innerHTML
     baseString = baseString.substring(0, baseString.length - 2).trim()
-    for (let i in updated) {
+    for (let i = 0; i < updated.length; i++) {
       if (updated[i] == baseString) {
-        delete updated[i];
-        updated.pop();
-        break;
+        if (i == updated.length - 1) {
+          updated.pop();
+          break;
+        } else {
+          updated[i] = updated.pop();
+          break;
+        }
       }
     }
     chrome.storage.local.set({ subscriptions: updated }).then( () => {
@@ -96,4 +100,3 @@ document.addEventListener("DOMContentLoaded", renderSaved);
 document.getElementById("addUrl").addEventListener("click", saveSubscription)
 document.getElementById("hideAll").addEventListener("change", hideAllResults)
 document.getElementById("hideHard").addEventListener("change", hideHardResults)
-document.getElementById("show").addEventListener("click", showState)
