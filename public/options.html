@@ -2,15 +2,29 @@
 <html>
   <head>
     <title>Paywall-Sentry Settings</title>
+    <link rel="stylesheet" href="options.css">
   </head>
   <body>
-    <input type="text" id="url" />
+    <input id="url" type="text" />
     <button id="addUrl">Add Subscription</button>
     <p id="displaySubs"></p>
 
     <div id="displayBox">
 
     </div>
+
+    <div>
+      <div class="boolean">
+        <input id="hideAll" type="checkbox">
+        <p>Hide All Paywalls</p>
+      </div>
+      <div class="boolean">
+        <input id="hideHard" type="checkbox">
+        <p>Hide Hard Paywalls Only</p>
+      </div>
+    </div>
+
+    <button id="show">Show</button>
 
     <script src="options.js"></script>
   </body>

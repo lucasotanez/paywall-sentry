@@ -1,5 +1,25 @@
 var cached : boolean = false;
 
+interface settings {
+  fullHide : boolean;
+  hardHide : boolean;
+}
+
+let userSettings : settings = {
+  fullHide : false,
+  hardHide : false,
+}
+
+chrome.storage.local.get(["hideAll"]).then( (result) => {
+  if (result.hideAll != undefined) userSettings.fullHide = result.hideAll
+  console.log(userSettings.fullHide)
+})
+
+chrome.storage.local.get(["hideHard"]).then( (result) => {
+  if (result.hideHard != undefined) userSettings.hardHide = result.hideHard
+  console.log(userSettings.hardHide)
+})
+
 interface styleConfig {
   hard : string;
   soft : string;
@@ -31,7 +51,7 @@ fetch("./blacklist.json").then( (data) => data.json() )
   })
 })
 
-function sentry(style : styleConfig, blacklistJSON : string) : Element[] {
+function sentry(style : styleConfig, blacklistJSON : string , userSettings : settings) : Element[] {
 
   let blacklist : Map<string, boolean> = new Map(Object.entries(JSON.parse(blacklistJSON)))
 
@@ -67,15 +87,37 @@ function sentry(style : styleConfig, blacklistJSON : string) : Element[] {
       }
 
       // if here, then the url is paywalled
-      // check if url is soft or hard paywall
-      let hard = blacklist.get(base) ? true : false
-      if (hard) {
-        display.innerHTML = "[" + String.fromCodePoint(0x2718) + "] " + display.innerHTML;
-        display.style.color = style.hard 
-      } else {
-        display.innerHTML = "[" + String.fromCodePoint(0x2757) + "] " + display.innerHTML;
-        display.style.color = style.soft
-      }     
+      if (userSettings.fullHide == true) {
+        let resultBlock : HTMLElement | null = display.closest('.MjjYud') as HTMLElement
+        if (resultBlock == null) resultBlock = display.closest('.hlcw0c') as HTMLElement
+        if (resultBlock != null) {
+          resultBlock.style.display = "none"
+          console.log(`Paywall Sentry has hidden a result. If this behavior is unwanted,
+                      please edit your extension settings.`)
+        }
+      }
+      else  {
+        // check if url is soft or hard paywall
+        let hard = blacklist.get(base) ? true : false
+        if (hard) {
+          if (userSettings.hardHide) {
+            let resultBlock : HTMLElement | null = display.closest('.MjjYud') as HTMLElement
+            if (resultBlock == null) resultBlock = display.closest('.hlcw0c') as HTMLElement
+            if (resultBlock != null) {
+              resultBlock.style.display = "none"
+              console.log(`Paywall Sentry has hidden a result. If this behavior is unwanted,
+                          please edit your extension settings.`)
+            }
+          }
+          else {
+            display.innerHTML = "[" + String.fromCodePoint(0x2718) + "] " + display.innerHTML;
+            display.style.color = style.hard 
+          }
+        } else {
+          display.innerHTML = "[" + String.fromCodePoint(0x2757) + "] " + display.innerHTML;
+          display.style.color = style.soft
+        }     
+      }
 
       // mark each element with a class
       links[index].classList.add(style.tag)
@@ -110,7 +152,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     chrome.scripting.executeScript({
       target: {tabId: tab.id ? tab.id : -1},
       func: sentry,
-      args: [style, JSON.stringify(paywallList)]
+      args: [style, JSON.stringify(paywallList), userSettings]
     }).then();
   }
 });
