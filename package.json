@@ -1,6 +1,6 @@
 {
   "name": "Paywall Sentry Chrome Extension",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Development environment for Paywall Sentry Chrome extension",
   "main": "index.js",
   "scripts": {
